@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charity Water Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="container">
+    <!-- Start Screen -->
+    <div id="startScreen" class="screen">
+    <img src="img/water-can-transparent.png" alt="Charity: water branding" style="width:120px; height:120px; margin-bottom:20px;">
+    <div class="title-box">
+      <h1>💧 Hydro Hero 💧</h1>
+      <p>Help charity: water break down the barriers standing between communities and clean water!</p>
+      <button id="startBtn">Start!</button>
+    </div>
+    <div class="how-to-play">
+      <h2>How to Play</h2>
+      <ul style="text-align:left; max-width:400px; margin:0 auto;">
+        <li>Move the paddle left and right using the buttons, arrow keys, or A/D.</li>
+        <li>Bounce the ball to break all the bricks.</li>
+        <li>Don't let the ball fall below the paddle!</li>
+        <li>Press Pause to stop the action, or Reset to start over.</li>
+      </ul>
+    </div>
+    <footer>
+      <a href="https://www.charitywater.org" target="_blank">CharityWater.org</a> |
+      <a href="https://www.charitywater.org/about" target="_blank">Learn More</a> |
+      <a href="https://www.charitywater.org/donate" target="_blank">Support</a>
+    </footer>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="hidden">
+      <div id="hud">
+  <span>Score: <span id="score">0</span></span>
+  <button id="pauseBtn">Pause</button>
+  <img src="img/water-can-transparent.png" alt="paddle-icon" style="width:70px; height:70px; vertical-align:middle; margin:0 8px;">
+  <button id="resetBtn">Reset</button>
+  <span id="timer">Elapsed Time: 0s</span>
+      </div>
+      <canvas id="gameCanvas" width="960" height="600"></canvas>
+      <!-- Mobile touch controls -->
+      <div id="touch-controls" style="display: flex; justify-content: center; gap: 16px; margin-top: 12px;">
+        <button id="leftBtn" aria-label="Move Left" style="font-size: 1.2rem; padding: 10px 24px;">&#8592; Left</button>
+        <button id="rightBtn" aria-label="Move Right" style="font-size: 1.2rem; padding: 10px 24px;">Right &#8594;</button>
+      </div>
+    </div>
+
+    <!-- End Screen -->
+    <div id="endScreen" class="screen hidden">
+      <div id="confetti"></div>
+      <div class="title-box">
+        <h2 id="endMessage"></h2>
+        <button id="restartBtn">Restart</button>
+        <button id="homeBtn">Return to Start</button>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

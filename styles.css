@@ -1,0 +1,373 @@
+:root {
+    --font-sans: "proxima-nova", "Proxima Nova", Inter, "Helvetica Neue", Arial, system-ui, sans-serif;
+  }
+
+  
+@media (max-width: 970px) {
+  html, body {
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  #container {
+    width: 100vw;
+    min-width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .screen {
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+    width: 100vw;
+    min-width: 100vw;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+
+  #hud {
+    width: 98vw;
+    max-width: 98vw;
+    min-width: 0;
+    margin: 8px auto 4px auto;
+    gap: 2px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: static;
+  }
+
+  #score, #timer {
+    font-size: 0.7rem;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+    padding: 0 1px;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  #pauseBtn, #resetBtn {
+    font-size: 0.6rem;
+    padding: 6px 10px;
+    flex: 1 1 0;
+    min-width: 80px;
+    max-width: none;
+    
+    border-radius: 3px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    text-align: center;
+    vertical-align: middle;
+    word-break: break-word;
+  }
+
+  button {
+    padding: 1px 2px;
+    font-size: 0.45rem;
+    margin-top: 0;
+    border-radius: 3px;
+    min-width: 20px;
+    max-width: 40px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+    button {
+      font-size: 0.6rem;
+      padding: 6px 10px;
+      min-width: 80px;
+      max-width: none;
+      margin-top: 0;
+      border-radius: 3px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      text-align: center;
+      vertical-align: middle;
+      word-break: break-word;
+    }
+
+  canvas {
+    width: 98vw !important;
+    max-width: 98vw !important;
+    height: 60vw !important;
+    max-height: 60vw !important;
+    min-width: 0;
+    min-height: 0;
+    margin: 0 auto;
+    display: block;
+    box-sizing: border-box;
+    border-width: 4px;
+  }
+
+  .title-box, .how-to-play {
+    font-size: 0.9rem;
+    padding: 12px 8px;
+  }
+
+  h1, h2, h3, p, ul, li {
+    font-size: 0.95em;
+    margin: 0.5em 0;
+  }
+}
+#hud button {
+  height: 40px;
+  padding: 0 20px;
+  font-size: 1rem;
+}
+.how-to-play {
+  margin-top: 48px;
+}
+.title-box {
+  background: #2E9DF7;
+  padding: 32px 24px 24px 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px #2E9DF799;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  margin-top: 48px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  --font-sans: "Proxima Nova", Inter, "Helvetica Neue", Arial, system-ui, sans-serif !important;
+}
+
+.title-box h1, .title-box p {
+  color: #fff;
+  margin: 0 0 16px 0;
+}
+.title-box button {
+  margin-top: 8px;
+}
+#score, #timer {
+  display: inline-block;
+  min-width: 120px;
+  text-align: center;
+}
+#container {
+  width: 80vw;
+  height: 80vh;
+  margin: 5vh auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+/* Charity: water Brand Colors
+
+Primary Colors:
+- Yellow:     #FFC907
+- Blue:       #2E9DF7
+
+Secondary Colors:
+- Light Blue: #8BD1CB
+- Green:      #4FCB53
+- Orange:     #FF902A
+- Red:        #F5402C
+- Dark Green: #159A48
+- Pink:       #F16061
+
+*/
+body {
+  background: #111;
+  color: #fff;
+  font-family: 'Press Start 2P', monospace;
+  text-align: center;
+  margin: 0;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.hidden {
+  display: none;
+}
+
+canvas {
+  background: #222;
+  border: 6px solid #ffc907;
+  border-radius: 10px;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#hud {
+  display: flex;
+  justify-content: space-between;
+  width: 960px;
+  margin: 10px auto;
+  font-size: 1.2rem;
+}
+
+button {
+  background: #ffc907;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: #111;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: #8BD1CB;
+}
+
+footer {
+  position: absolute;
+  bottom: 20px;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #fff;
+  text-decoration: underline; /* optional, for visibility */
+}
+
+#score, #timer {
+  display: inline-block;
+  min-width: 80px; /* Adjust as needed */
+  text-align: center;
+}
+
+#confetti {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+.confetti-piece {
+  position: absolute;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: confetti-fall 1.2s linear forwards;
+}
+@keyframes confetti-fall {
+  to {
+    transform: translateY(400px) rotate(360deg);
+    opacity: 0;
+  }
+}
+/* Consolidated small-screen rules: ensure HUD (score, buttons, timer)
+   is visible and not clipped on narrow viewports, and make the canvas
+   use available vertical space. This replaces multiple conflicting
+   small-screen blocks with a single clear override. */
+@media (max-width: 520px) {
+  html, body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  /* Container adapts to viewport so HUD stays within visible area */
+  #container {
+    width: 96vw;
+    max-width: 96vw;
+    margin: 2vh auto;
+    padding: 0 2vw;
+    box-sizing: border-box;
+    height: auto;
+  }
+
+  /* HUD: keep items readable and prevent clipping at the top */
+  #hud {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 4px;
+    box-sizing: border-box;
+    margin: 6px 0;
+    background: transparent;
+    flex-wrap: wrap; /* allow buttons to move to next line when needed */
+  }
+
+  /* Score and timer: allow shrinking but keep readable */
+  #score, #timer {
+    flex: 0 0 auto;
+    min-width: 64px;
+    /* max-width: 50%; */
+    font-size: 0.78rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Buttons: keep padding to avoid text clipping, but allow wrap */
+  #pauseBtn, #resetBtn {
+    flex: 0 0 auto;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    margin: 4px 6px;
+    border-radius: 6px;
+    box-sizing: border-box;
+    white-space: nowrap;
+  }
+
+  /* Canvas: fit width and use more vertical space for play area */
+  canvas {
+    width: 100% !important;
+    height: calc(68vh) !important;
+    max-height: calc(68vh) !important;
+    margin: 6px auto 0 auto;
+    box-sizing: border-box;
+  }
+
+  /* Touch controls: larger targets on small screens */
+  #touch-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  #touch-controls button {
+    font-size: 1rem;
+    padding: 10px 18px;
+  }
+  footer {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+    padding: 0 4px;
+    box-sizing: border-box;
+    z-index: 1;
+  }
+}
