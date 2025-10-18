@@ -122,11 +122,47 @@ function drawBricks() {
 }
 
 function drawBall() {
+  // Draw a raindrop / teardrop shape that points upward and is rounded at the bottom
+  const r = ballRadius;
+  // control how pointy the top is (0..1) where larger = pointier
+  const pointFactor = 0.62; // slightly increase to keep proportions when widening
+
+  ctx.save();
   ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-  ctx.fillStyle = "#00bfff";
-  ctx.fill();
+  // Move to top point
+  ctx.moveTo(x, y - r);
+  // Right side curve down to bottom-right
+  // right side down to bottom (pull bulge more downward and a bit inward)
+  ctx.bezierCurveTo(
+    x + r * pointFactor, y - r * 0.25,
+  x + r * 0.85, y + r * 0.95,
+    x, y + r
+  );
+  // Left side curve back up to top point
+  // left side mirror (inward and lower for a rounder bottom)
+  ctx.bezierCurveTo(
+    x - r * 0.85, y + r * 0.95,
+    x - r * pointFactor, y - r * 0.25,
+    x, y - r
+  );
   ctx.closePath();
+
+  // Gradient fill for a glossy raindrop look
+  const grad = ctx.createLinearGradient(x, y - r, x, y + r);
+  grad.addColorStop(0, '#69d1ff');
+  grad.addColorStop(0.6, '#00bfff');
+  grad.addColorStop(1, '#007fbf');
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // small highlight for depth
+  ctx.beginPath();
+  ctx.moveTo(x - r * 0.25, y - r * 0.35);
+  ctx.quadraticCurveTo(x - r * 0.05, y - r * 0.55, x + r * 0.12, y - r * 0.18);
+  ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+  ctx.lineWidth = Math.max(1, r * 0.08);
+  ctx.stroke();
+  ctx.restore();
 }
 
 function drawPaddle() {
