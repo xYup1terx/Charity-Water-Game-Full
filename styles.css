@@ -155,7 +155,7 @@
   margin-top: 48px;
   padding-top: 40px;
   padding-bottom: 40px;
-  --font-sans: "Proxima Nova", Inter, "Helvetica Neue", Arial, system-ui, sans-serif !important;
+  --font-sans: "Proxima Nova", Inter, "Helvetica Neue", Arial, system-ui, sans-serif;
 }
 
 .title-box h1, .title-box p {
