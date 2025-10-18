@@ -140,6 +140,18 @@
   padding: 0 20px;
   font-size: 1rem;
 }
+/* Mode toggle specific styling */
+#modeToggle {
+  background: #bf6c46;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+#modeToggle[aria-pressed="true"] {
+  background: #003366;
+}
 .how-to-play {
   margin-top: 48px;
 }
@@ -400,3 +412,25 @@ footer a {
 }
 
 /* If the user wants the logo to be interactive later, remove pointer-events rule above */
+
+/* Milestone overlay */
+#milestone {
+  position: fixed;
+  top: 14vh;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  background: rgba(46,157,247,0.98);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  z-index: 2000;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 260ms ease, transform 260ms cubic-bezier(.2,.8,.2,1);
+}
+.show-milestone {
+  opacity: 1;
+  transform: translateX(-50%) translateY(6px);
+}

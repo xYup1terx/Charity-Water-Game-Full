@@ -55,6 +55,7 @@ const endMessage = document.getElementById("endMessage");
 const pauseBtn = document.getElementById("pauseBtn");
 const resetBtn = document.getElementById("resetBtn");
 const muteBtn = document.getElementById('muteBtn');
+const modeToggle = document.getElementById('modeToggle');
 
 // --- Simple WebAudio collision sounds (no external files) ---
 let audioCtx = null;
@@ -112,6 +113,10 @@ let timer = 0;
 let interval;
 let gameOver = false;
 let paused = false;
+// Timed mode state
+let timedMode = false;
+let countdownSeconds = 0;
+const TIMED_MODE_DURATION = 4 * 60; // 4 minutes
 
 // Ball
 let ballRadius = canvas.width * 0.01; // Scales with canvas size
@@ -139,6 +144,10 @@ const totalBricksWidth = brickColumnCount * brickWidth + (brickColumnCount - 1) 
 const brickOffsetLeft = (canvas.width - totalBricksWidth) / 2;
 
 let bricks = [];
+
+// Milestone tracking
+let bricksBroken = 0;
+let halfwayShown = false;
 
 function initBricks() {
   bricks = [];
@@ -242,6 +251,14 @@ function collisionDetection() {
         ) {
           dy = -dy;
           b.status = 0;
+          // milestone tracking: increment only when a brick transitions to broken
+          bricksBroken++;
+          const totalBricks = brickRowCount * brickColumnCount;
+          const halfThreshold = Math.floor(totalBricks / 2);
+          if (!halfwayShown && bricksBroken >= halfThreshold) {
+            halfwayShown = true;
+            showMilestone();
+          }
           score += 5;
           scoreDisplay.textContent = score;
           try { playCollision('brick'); } catch(e) {}
@@ -252,6 +269,24 @@ function collisionDetection() {
       }
     }
   }
+}
+
+function showMilestone() {
+  const el = document.getElementById('milestone');
+  if (!el) return;
+  // ensure visible
+  el.classList.remove('hidden');
+  el.style.display = 'block';
+  void el.offsetHeight; // force reflow
+  el.classList.add('show-milestone');
+  try { playTone(1100, 0.12, 'sine'); } catch (e) {}
+  setTimeout(() => {
+    el.classList.remove('show-milestone');
+    setTimeout(() => {
+      el.style.display = 'none';
+      el.classList.add('hidden');
+    }, 300);
+  }, 2400);
 }
 
 function draw() {
@@ -303,10 +338,7 @@ if (pauseBtn) {
     if (paused) {
       clearInterval(interval); // Stop the timer
     } else {
-      interval = setInterval(() => {
-        timer++;
-        document.getElementById("timer").textContent = `Elapsed Time: ${timer}s`;
-      }, 1000);
+        interval = setInterval(timerTick, 1000);
       draw();
     }
     pauseBtn.textContent = paused ? "Resume" : "Pause";
@@ -320,6 +352,67 @@ if (resetBtn) {
     pauseBtn.textContent = "Pause";
     startGame();
   });
+}
+
+// Mode toggle handler (switch Normal <-> Timed)
+if (modeToggle) {
+  modeToggle.addEventListener('click', () => {
+    timedMode = !timedMode;
+    modeToggle.setAttribute('aria-pressed', String(timedMode));
+    modeToggle.textContent = timedMode ? 'Mode: Timed' : 'Mode: Normal';
+    // show/hide the description on the start screen depending on mode
+    const desc = document.getElementById('modeDesc');
+    if (desc) {
+      if (timedMode) {
+        desc.classList.remove('hidden');
+      } else {
+        desc.classList.add('hidden');
+      }
+    }
+    if (timedMode) {
+      countdownSeconds = TIMED_MODE_DURATION;
+      document.getElementById("timer").textContent = formatTime(countdownSeconds);
+    } else {
+      document.getElementById("timer").textContent = `Elapsed Time: ${timer}s`;
+    }
+  });
+}
+
+function timerTick() {
+  if (timedMode) {
+    if (countdownSeconds > 0) {
+      countdownSeconds--;
+      document.getElementById("timer").textContent = formatTime(countdownSeconds);
+      if (countdownSeconds === 0) {
+        // time ran out — check for remaining bricks
+        const remaining = countRemainingBricks();
+        if (remaining > 0) {
+          endGame(false);
+        } else {
+          endGame(true);
+        }
+      }
+    }
+  } else {
+    timer++;
+    document.getElementById("timer").textContent = `Elapsed Time: ${timer}s`;
+  }
+}
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60).toString().padStart(2, '0');
+  const s = (sec % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+}
+
+function countRemainingBricks() {
+  let rem = 0;
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      if (bricks[c] && bricks[c][r] && bricks[c][r].status === 1) rem++;
+    }
+  }
+  return rem;
 }
 
 document.addEventListener("keydown", keyDownHandler);
@@ -391,14 +484,25 @@ function startGame() {
   initBricks();
   score = 0;
   scoreDisplay.textContent = 0;
+  // reset milestone tracking and hide milestone element
+  bricksBroken = 0;
+  halfwayShown = false;
+  const milestoneEl = document.getElementById('milestone');
+  if (milestoneEl) {
+    milestoneEl.classList.remove('show-milestone');
+    milestoneEl.classList.add('hidden');
+    milestoneEl.style.display = 'none';
+  }
   gameOver = false;
   clearInterval(interval);
   timer = 0;
-  document.getElementById("timer").textContent = `Elapsed Time: 0s`;
-  interval = setInterval(() => {
-    timer++;
-    document.getElementById("timer").textContent = `Elapsed Time: ${timer}s`;
-  }, 1000);
+  if (timedMode) {
+    countdownSeconds = TIMED_MODE_DURATION;
+    document.getElementById("timer").textContent = formatTime(countdownSeconds);
+  } else {
+    document.getElementById("timer").textContent = `Elapsed Time: 0s`;
+  }
+  interval = setInterval(timerTick, 1000);
   draw();
 }
 
@@ -431,6 +535,14 @@ restartBtn.addEventListener("click", startGame);
 homeBtn.addEventListener("click", () => {
   endScreen.classList.add("hidden");
   startScreen.classList.remove("hidden");
+  // reset mode toggle to Normal when returning to start
+  if (modeToggle) {
+    timedMode = false;
+    modeToggle.setAttribute('aria-pressed', 'false');
+    modeToggle.textContent = 'Mode: Normal';
+  }
+  const desc = document.getElementById('modeDesc');
+  if (desc) desc.classList.add('hidden');
 });
 
 // Mute toggle (if button exists)
