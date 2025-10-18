@@ -54,6 +54,58 @@ const scoreDisplay = document.getElementById("score");
 const endMessage = document.getElementById("endMessage");
 const pauseBtn = document.getElementById("pauseBtn");
 const resetBtn = document.getElementById("resetBtn");
+const muteBtn = document.getElementById('muteBtn');
+
+// --- Simple WebAudio collision sounds (no external files) ---
+let audioCtx = null;
+let masterGain = null;
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.08; // overall volume
+  masterGain.connect(audioCtx.destination);
+}
+
+function playTone(freq, duration = 0.08, type = 'sine') {
+  try {
+    if (!audioCtx) initAudio();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    o.connect(g);
+    g.connect(masterGain);
+    const now = audioCtx.currentTime;
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(1.0, now + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    o.start(now);
+    o.stop(now + duration + 0.02);
+  } catch (e) {
+    // silence failures (older browsers)
+  }
+}
+
+function playCollision(type) {
+  // Ensure AudioContext is resumed if suspended (user gesture happened on startGame)
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+  if (type === 'brick') {
+    // bright short ping
+    playTone(980, 0.09, 'sine');
+  } else if (type === 'paddle') {
+    // lower softer tone
+    playTone(520, 0.08, 'triangle');
+  } else if (type === 'wall') {
+    // medium click
+    playTone(720, 0.06, 'square');
+  } else if (type === 'miss') {
+    // subtle negative blip
+    playTone(220, 0.18, 'sine');
+  }
+}
 
 let score = 0;
 let timer = 0;
@@ -192,6 +244,7 @@ function collisionDetection() {
           b.status = 0;
           score += 5;
           scoreDisplay.textContent = score;
+          try { playCollision('brick'); } catch(e) {}
           if (score === brickRowCount * brickColumnCount * 5) {
             endGame(true);
           }
@@ -211,16 +264,20 @@ function draw() {
 
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
     dx = -dx;
+    try { playCollision('wall'); } catch(e) {}
   }
   if (y + dy < ballRadius) {
     dy = -dy;
+    try { playCollision('wall'); } catch(e) {}
   } else if (y + dy > canvas.height - ballRadius - 10) {
     // Use current paddle width (supports resized/mobile values)
     const currentPaddleWidth = (typeof window.paddleWidth !== 'undefined') ? window.paddleWidth : paddleWidth;
     if (x > paddleX && x < paddleX + currentPaddleWidth) {
       dy = -dy;
+      try { playCollision('paddle'); } catch(e) {}
     } else {
       // Ball missed paddle -> game over
+      try { playCollision('miss'); } catch(e) {}
       endGame(false);
     }
   }
@@ -285,6 +342,9 @@ function keyUpHandler(e) {
 }
 
 function startGame() {
+  // initialize audio on user gesture so browsers allow sound
+  try { initAudio(); } catch (e) {}
+
   startScreen.classList.add("hidden");
   gameScreen.classList.remove("hidden");
   endScreen.classList.add("hidden");
@@ -372,3 +432,19 @@ homeBtn.addEventListener("click", () => {
   endScreen.classList.add("hidden");
   startScreen.classList.remove("hidden");
 });
+
+// Mute toggle (if button exists)
+if (muteBtn) {
+  // reflect current state
+  muteBtn.addEventListener('click', () => {
+    try { initAudio(); } catch (e) {}
+    if (!masterGain) return;
+    if (masterGain.gain.value > 0.001) {
+      masterGain.gain.value = 0.0;
+      muteBtn.textContent = 'Unmute';
+    } else {
+      masterGain.gain.value = 0.08;
+      muteBtn.textContent = 'Mute';
+    }
+  });
+}
