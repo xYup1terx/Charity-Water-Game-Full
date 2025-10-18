@@ -371,3 +371,32 @@ footer a {
     z-index: 1;
   }
 }
+
+/* Fixed bottom-left branding logo to show charity water mark */
+#brandingLogo {
+  position: fixed;
+  left: 16px; /* slightly more inset to keep a comfortable margin */
+  bottom: 16px; /* slightly more inset to keep a comfortable margin */
+  /* make the logo larger across devices while remaining responsive
+     - min 64px on tiny screens
+     - scale with viewport at 10vw for medium sizes
+     - max 180px on large screens */
+  width: clamp(64px, 10vw, 180px);
+  height: auto; /* preserve aspect ratio */
+  z-index: 1000; /* above most UI */
+  pointer-events: none; /* let clicks pass through */
+  opacity: 0.98;
+  transition: transform 180ms ease, opacity 200ms ease;
+}
+
+/* Slightly reduce size on very small screens and avoid covering HUD */
+@media (max-width: 520px) {
+  #brandingLogo {
+    left: 10px;
+    bottom: 10px;
+    /* keep it large but not overwhelming on small phones */
+    width: clamp(56px, 12vw, 120px);
+  }
+}
+
+/* If the user wants the logo to be interactive later, remove pointer-events rule above */
